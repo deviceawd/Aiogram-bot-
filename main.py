@@ -44,23 +44,7 @@ async def send_welcome(message: Message):
                 await message.answer("Ошибка загрузки курсов валют.")
 
 # 👋 Хендлер команды /start
-@dp.message(Command("start"))
-async def send_welcome(message: Message):
-    intro_text = (
-        "👋 Привет! Добро пожаловать в наш крипто-бот.\n\n"
-        "📌 Здесь вы можете:\n"
-        "• Узнать курс криптовалют\n"
-        "• Оформить заявку на обмен\n"
-        "• Получить консультацию\n\n"
-        "🧾 Меню: /cash — наличка, /crypto — крипта\n"
-    )
-    await message.answer(intro_text)
 
-    try:
-        rates = await fetch_currency_rates()
-        await message.answer(f"📊 Актуальные курсы валют:\n\n{rates}")
-    except Exception as e:
-        await message.answer(f"⚠️ Ошибка при получении курса валют:\n{e}")
 
 # 👇 Регистрация всех хендлеров
 def register_all_handlers(dp: Dispatcher):

@@ -97,3 +97,4 @@ def register_crypto_handlers(dp: Dispatcher):
     dp.message.register(get_network, StateFilter(CryptoFSM.network))
     dp.message.register(get_amount, StateFilter(CryptoFSM.amount))
     dp.message.register(get_contact, StateFilter(CryptoFSM.contact))
+
