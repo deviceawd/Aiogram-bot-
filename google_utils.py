@@ -10,7 +10,7 @@ from typing import Optional, Dict, Any
 from config import ETHERSCAN_API_KEY, BSCSCAN_API_KEY, TRONSCAN_API_KEY
 
 from config import logger
-import datetime
+from datetime import datetime, timezone
 
 from utils.decode_etc20 import decode_erc20_input
 
@@ -215,7 +215,7 @@ async def check_ethereum_transaction(tx_hash: str, target_address: str, api_key:
 
                     # Переводим в int
                     ts_int = int(timestamp, 16)
-                    dt = datetime.datetime.fromtimestamp(ts_int / 1000)
+                    dt = dt = datetime.fromtimestamp(ts_int, tz=timezone.utc)
                 return {
                     "success": True,
                     "status": "confirmed",
