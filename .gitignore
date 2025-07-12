@@ -12,4 +12,10 @@ client_secret_317694747647-tf1drt9g8v1s6p07t1d94jen11qa85ud.apps.googleuserconte
 client_secret_*.json
 service_account.json
 client_secret.json
+<<<<<<< HEAD
 .json/
+=======
+.json/
+test_transaction.py
+test_gspread.py
+>>>>>>> upstream/check_transaction
