@@ -21,7 +21,7 @@ async def check_ethereum_transaction(tx_hash: str, target_address: str) -> dict:
                     return {"success": False, "error": f"Ошибка API: {response.status}"}
                 data = await response.json()
                 tx_data = data.get("result")
-                logger.info("ETH data: %s", tx_data)
+                # logger.info("ETH data: %s", tx_data)
 
                 if not tx_data:
                     return {"success": False, "error": "Транзакция не найдена"}
@@ -51,6 +51,7 @@ async def check_ethereum_transaction(tx_hash: str, target_address: str) -> dict:
             }
             async with session.get(url, params=params_latest) as resp_latest:
                 latest_block_data = await resp_latest.json()
+                logger.info("ETH latest_block_data:-------- %s", latest_block_data)
                 latest_block_hex = latest_block_data.get("result")
                 if not latest_block_hex:
                     return {"success": False, "error": "Не удалось получить номер последнего блока"}
@@ -59,7 +60,9 @@ async def check_ethereum_transaction(tx_hash: str, target_address: str) -> dict:
             await asyncio.sleep(0.6)
 
             tx_block = int(tx_data.get("blockNumber"), 16)
-            confirmations = latest_block - tx_block + 1
+            # logger.info("ETH block_data: %s", confirmations, ERC20_CONFIRMATIONS)
+            confirmations = latest_block - tx_block
+            logger.info("ETH latest_block: %s", confirmations < ERC20_CONFIRMATIONS)
             if confirmations < ERC20_CONFIRMATIONS:
                 return {"success": False, "error": f"Недостаточно подтверждений: {confirmations}/{ERC20_CONFIRMATIONS}"}
 
@@ -74,7 +77,7 @@ async def check_ethereum_transaction(tx_hash: str, target_address: str) -> dict:
             async with session.get(url, params=params_block) as resp_block:
                 block_response = await resp_block.json()
                 block_data = block_response.get("result")
-                logger.info("ETH block_data: %s", block_data)
+                # logger.info("ETH block_data: %s", block_data)
 
                 if not isinstance(block_data, dict) or "timestamp" not in block_data:
                     return {"success": False, "error": "Не удалось получить timestamp блока"}

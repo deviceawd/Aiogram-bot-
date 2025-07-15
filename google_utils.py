@@ -8,7 +8,7 @@ import csv
 import json
 from typing import Optional, Dict, Any
 from config import ETHERSCAN_API_KEY, BSCSCAN_API_KEY, TRONSCAN_API_KEY
-
+from tasks import check_erc20_transaction_task
 from config import logger
 from datetime import datetime, timezone
 
@@ -59,7 +59,7 @@ def get_wallet_address(network: str) -> str:
         # Подключаемся к Google Sheets
         scope = ['https://spreadsheets.google.com/feeds',
                  'https://www.googleapis.com/auth/drive']
-        creds = ServiceAccountCredentials.from_json_keyfile_name('service_account.json', scope)
+        creds = ServiceAccountCredentials.from_json_keyfile_name('json/service_account.json', scope)
         client = gspread.authorize(creds)
 
         # Открываем таблицу и лист "Лист3"
@@ -137,7 +137,8 @@ async def verify_transaction(tx_hash: str, network: str, target_address: str) ->
     if network == "TRC20":
         return await check_tron_transaction(tx_hash, target_address)
     elif network == "ERC20":
-        return await check_ethereum_transaction(tx_hash, target_address)
+        task = check_erc20_transaction_task.delay(tx_hash, target_address)
+        return {"success": True, "message": "Транзакция принята в обработку", "task_id": task.id}
     elif network == "BEP20":
         return await check_bsc_transaction(tx_hash, target_address)
     else:
@@ -153,7 +154,7 @@ def save_transaction_hash(user: str, transaction_hash: str, wallet_address: str,
             'https://spreadsheets.google.com/feeds',
             'https://www.googleapis.com/auth/drive'
         ]
-        creds = ServiceAccountCredentials.from_json_keyfile_name('service_account.json', scope)
+        creds = ServiceAccountCredentials.from_json_keyfile_name('json/service_account.json', scope)
         client = gspread.authorize(creds)
 
         sheet = client.open_by_key('1qUhwJPPDJE-NhcHoGQsIRebSCm_gE8H6K7XSKxGVcIo').worksheet('Лист4')
@@ -162,7 +163,7 @@ def save_transaction_hash(user: str, transaction_hash: str, wallet_address: str,
             user,
             transaction_hash,
             wallet_address,
-            datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+            datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
             status
         ]
 

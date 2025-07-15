@@ -1,12 +1,13 @@
 import aiohttp
 import datetime
-from config import TRONSCAN_API, TRC20_CONFIRMATIONS, logger
+from config import TRONSCAN_API_KEY, TRC20_CONFIRMATIONS, logger
 
 async def check_tron_transaction(tx_hash: str, target_address: str) -> dict:
     USDT_CONTRACT = "TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t"
+    TRONSCAN_API_URL = "https://api.tronscan.org/api"
     try:
         async with aiohttp.ClientSession() as session:
-            url = f"{TRONSCAN_API}/transaction-info"
+            url = f"{TRONSCAN_API_URL}/transaction-info"
             params = {"hash": tx_hash}
             async with session.get(url, params=params) as response:
                 if response.status != 200:

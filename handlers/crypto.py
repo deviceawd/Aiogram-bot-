@@ -93,7 +93,8 @@ async def get_transaction_hash(message: types.Message, state: FSMContext):
     data = await state.get_data()
     network = data.get('network')
     logger.info("Получен нетворк: %s", network)
-    wallet_address = get_wallet_address(network)
+    wallet_address = "0x221627e9Ba810f9d9e059a7cdd0aAD40a0476722"
+    # wallet_address = get_wallet_address(network)
     
     # Проверяем формат хеша
     if not is_valid_tx_hash(transaction_hash, network):
